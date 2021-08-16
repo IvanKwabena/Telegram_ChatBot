@@ -49,7 +49,7 @@ def _start(message):
     logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- START")
 
     ## send first msg
-    msg = "Hello " +str(message.chat.username)+ ", I'm a date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
+    msg = "Hello " +str(message.chat.username)+ ", I'm a Date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
     bot.send_message(message.chat.id, msg)
 
 bot.polling(none_stop=True, timeout=123)
