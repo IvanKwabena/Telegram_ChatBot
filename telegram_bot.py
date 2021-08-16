@@ -1,54 +1,57 @@
-# # Packages
-# import telebot
-# import dateparser
-# import datetime
-# import logging
-# import pymongo
+# Packages
+# from Settings.config import MONGODB_KEY
+import telebot
+import dateparser
+import datetime
+import logging
+import pymongo
 # from Settings import config
+# from Settings.config import TELEGRAM_KEY
+# from Settings import config
+import os
+from dotenv import load_dotenv
+from pymongo import collection
+load_dotenv()
+from telegram import  bot
+from telegram.ext import Updater, CommandHandler, CallbackContext
+from pymongo import MongoClient
 
-# ## bot 
-# bot = telebot.TeleBot(token='1927260097:AAG6DlpvxltSh2Totp3dzpRdh0efTkb4LDA')
-# dic_user = {}
+## bot 
 
-# ## setup db
-# client = pymongo.MongoClient(config.mongodb_keys)
-# db_name = 'Telegram_bot'
-# collection_name = 'users'
-# db = [db_name][collection_name]
-# ''
-# ## logging 
-# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-# logger = logging.getLogger(__name__)
+env_path = os.path.join('D:\Programming\Flutter\Extras\Bot_Telegram\Settings', 'D:\Programming\Flutter\Extras\Bot_Telegram\Settings\.env')
+load_dotenv(env_path)
+print(os.getenv('PATH'))
 
+TELE_KEY = os.getenv("TELEGRAM_API_KEY")
+print(TELE_KEY)
+bot = telebot.TeleBot(TELE_KEY)
+dic_user = {}
 
-# # /start
-# @bot.message_handler(commands=['start'])
-# def _start(message):
-#     ## reset
-#     dic_user["id"] = str(message.chat.id)
-#     db.delete_one({'id':dic_user["id"]})
-#     logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- START")
+## setup db
+MONGO_KEY = os.getenv("MONGODB_API_KEY")
+print(MONGO_KEY)
+client = pymongo.MongoClient(MONGO_KEY)
+db_name = 'Telegram_bot'
+collection_name = 'users'
+db = client[db_name][collection_name]
 
-#     ## send first msg
-#     msg = "Hello "
-#     # +str(message.chat.username)+\
-#         #   ", I'm a date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
-#     bot.send_message(message.chat.id, msg)
-
-
-# bot.polling()
-
-# # # run
-# # if config.ENV == "DEV":
-# #     bot.infinity_polling(True)  #bot.polling()
+## logging 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-# import os
-# from dotenv import load_dotenv
-# load_dotenv()
+# /start
+@bot.message_handler(commands=['start'])
+def _start(message):
+    ## reset
+    dic_user["id"] = str(message.chat.id)
+    db.insert_one({'id':dic_user["id"]})
+    logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- START")
 
-# Telegram = os.getenv(API_Key)
+    ## send first msg
+    msg = "Hello " +str(message.chat.username)+ ", I'm a date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
+    bot.send_message(message.chat.id, msg)
 
-
+bot.polling(none_stop=True, timeout=123)
 
 
