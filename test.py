@@ -39,7 +39,7 @@
 #     bot.reply_to(message, "Hello")
 
 # bot.polling(none_stop=True, timeout=123)
- # # run
+# # run
 
 # bot.infinity_polling()  #bot.polling()
 

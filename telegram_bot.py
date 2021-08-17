@@ -45,13 +45,49 @@ logger = logging.getLogger(__name__)
 def _start(message):
     ## reset
     dic_user["id"] = str(message.chat.id)
-    db.insert_one({'id':dic_user["id"]})
+    db.delete_one({'id':dic_user["id"]})
     logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- START")
 
     ## send first msg
     msg = "Hello " +str(message.chat.username)+ ", I'm a Date reminder. Tell me birthdays and events to remind you. To learn how to use me, use \n/help"
     bot.send_message(message.chat.id, msg)
 
-bot.polling(none_stop=True, timeout=123)
+
+# /save
+@bot.message_handler(commands=['save'])
+def _save(message):
+    msg = "Set an event in the format 'month dd', for example: \n\
+        xmas day: Dec 25 \n\
+I also understand: \n\
+today, tomorrow, in 3 days, in 1 week, in 6 months, yesterday, 3 days ago ... so you can do: \n\
+            meeting: tomorrow"
+    message = bot.reply_to(message , msg)
+    bot.register_next_step_handler(message, save_event)
+
+def save_event(message):
+    dic_user['id'] = str(message.chat.id)
+
+    # get text
+    txt = message.text
+    logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- SAVE - "+txt)
+    name , date = txt.split(':')[0], txt.split(':')[1] 
+
+    ##check date
+    date = dateparser.parse(date).strftime('%b %d')
+
+    ##save
+    lst_users = db.distinct(key='id')
+    if dic_user['id'] not in lst_users:
+        db.insert_one({'id':dic_user['id'], 'event':{name:date}})
+    else :
+        dic_events = db.find_one({'id':dic_user['id']})['events']
+        dic_events.update({name:date})
+        db.update_one({'id':dic_user['id']},  {"$set":{"events":dic_events}})
+
+    msg =  name+": "+date+" saved."
+    bot.send_message(message.chat.id, msg)
+
+
+bot.polling(none_stop=True)
 
 
