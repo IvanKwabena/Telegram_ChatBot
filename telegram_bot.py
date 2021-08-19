@@ -148,7 +148,17 @@ def delete_event(message):
     msg =  txt+" deleted."
     bot.send_message(message.chat.id, msg)
 
-
+# non command message 
+@bot.message_handler(func=lambda m : True)
+def chat(message):
+    txt = message.text
+    if any(x in txt.lower() for x in ["thank","thx","cool"]):
+        msg = "anytime"
+    elif any(x in txt.lower() for x in ["hi","hello","yo","hey"]):
+        msg = "yo" if str(message.chat.username) == "none" else "yo "+str(message.chat.username)
+    else:
+        msg = "save a date with \n/save"
+    bot.send_message(message.chat.id, msg)
 
 
 
