@@ -125,6 +125,19 @@ def _view(message):
     bot.send_message(message.chat.id, msg)
 
 
+#delete
+@bot.message_handler(commands=['delete'])
+def _delete(message):
+    msg = "Tell me the event to Delete, for example: \n\
+        xmas day \nAnd I'm gonna stop the reminder."
+    message = bot.reply_to(message, msg)
+    bot.register_next_step_handler(message, delete_event)
+
+def delete_event(message):
+    dic_user['id'] = str(message.chat.id)
+
+
+
 
 
 bot.polling(none_stop=True)
