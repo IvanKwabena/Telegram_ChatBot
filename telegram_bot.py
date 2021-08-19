@@ -161,6 +161,14 @@ def chat(message):
     bot.send_message(message.chat.id, msg)
 
 
+def scheduler():
+    lst_users = db.distinct(key='id')
+    logging.info("--- SCHEDULER for "+str(len(lst_users))+" users ---")
+    for user in lst_users:
+        dic_user = db.find_one({'id':dic_user['id']})['events']
+        today = datetime.datetime.today().strftime('%b %d')
+        
+
 
 bot.polling(none_stop=True)
 
