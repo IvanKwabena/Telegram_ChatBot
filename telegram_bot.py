@@ -136,6 +136,17 @@ def _delete(message):
 def delete_event(message):
     dic_user['id'] = str(message.chat.id)
 
+    txt = message.text
+    logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- DELETE - "+txt)
+
+    ## delete
+    dic_events = db.find_one({'id': dic_user['id']})['ecents']
+    dic_events.pop(txt)
+    db.update_one({'id':dic_user['id']},  {"$set":{"events":dic_events}})
+
+    # send done
+    msg =  txt+" deleted."
+    bot.send_message(message.chat.id, msg)
 
 
 
