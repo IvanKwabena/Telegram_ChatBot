@@ -1,5 +1,6 @@
 # Packages
 # from Settings.config import MONGODB_KEY
+from pymongo import message
 import telebot
 import dateparser
 import datetime
@@ -86,6 +87,27 @@ def save_event(message):
 
     msg =  name+": "+date+" saved."
     bot.send_message(message.chat.id, msg)
+
+
+## Check
+@bot.message_handler(commands=['check'])
+def _check(message):
+    dic_user['id'] = str(message.chat.id)
+
+    #error
+    lst_users = db.distinct(key='id')
+    if dic_user not in lst_users:
+        msg = "Please use the /save command to save an event first"
+    
+    #Query
+    else :
+        dic_events = db.find_one({'id': dic_user['id']})['events']
+        today = datetime.datetime.today().strftime('%b %d')
+        logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- CHECKING")
+        res =  [k for k , v in dic_events.items() if v == 'today']
+        msg = "Today's events: "+", ".join(res) if len(res) > 0 else "No events today"
+    bot.send_message(message.chat.id, msg)
+
 
 
 bot.polling(none_stop=True)
