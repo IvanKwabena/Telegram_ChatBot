@@ -165,9 +165,14 @@ def scheduler():
     lst_users = db.distinct(key='id')
     logging.info("--- SCHEDULER for "+str(len(lst_users))+" users ---")
     for user in lst_users:
-        dic_user = db.find_one({'id':dic_user['id']})['events']
+        dic_events = db.find_one({'id':dic_user['id']})['events']
         today = datetime.datetime.today().strftime('%b %d')
-        
+        res = [k for k, v in dic_events.items() if v == today]
+        if len(res) > 0:
+            msg = "Today's events: "+", ".join(res)
+            bot.send_message(user, msg)
+
+
 
 
 bot.polling(none_stop=True)
