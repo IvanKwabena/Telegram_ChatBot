@@ -1,5 +1,6 @@
 # Packages
 # from Settings.config import MONGODB_KEY
+from chats import TeleChats
 from pymongo import message
 import telebot
 import dateparser
@@ -21,7 +22,7 @@ from pymongo import MongoClient
 
 env_path = os.path.join('D:\Programming\Flutter\Extras\Bot_Telegram\Settings', 'D:\Programming\Flutter\Extras\Bot_Telegram\Settings\.env')
 load_dotenv(env_path)
-print(os.getenv('PATH'))
+# print(os.getenv('PATH'))
 
 TELE_KEY = os.getenv("TELEGRAM_API_KEY")
 print(TELE_KEY)
@@ -154,18 +155,21 @@ def delete_event(message):
     msg =  txt+" deleted."
     bot.send_message(message.chat.id, msg)
 
-# non command message 
-@bot.message_handler(func=lambda m : True)
-def chat(message):
-    txt = message.text
-    if any(x in txt.lower() for x in ["thank","thx","cool"]):
-        msg = "anytime"
-    elif any(x in txt.lower() for x in ["hi","hello","yo","hey"]):
-        msg = "yo" if str(message.chat.username) == "none" else "yo "+str(message.chat.username)
-    else:
-        msg = "save a date with \n/save"
-    bot.send_message(message.chat.id, msg)
 
+# non command message 
+@bot.message_handler()
+def temp(message):
+    msg =TeleChats(message).bot_chat()
+# def chat(message):
+    # txt = message.text
+    # if any(x in txt.lower() for x in ["thank","thx","cool"]):
+    #     msg = "anytime"
+    # elif any(x in txt.lower() for x in ["hi","hello","yo","hey"]):
+    #     msg = "yo" if str(message.chat.username) == "none" else "yo "+str(message.chat.username)
+    # else:
+    #     msg = "save a date with \n/save"
+
+    bot.send_message(message.chat.id, msg)
 
 def scheduler():
     lst_users = db.distinct(key='id')
