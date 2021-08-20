@@ -79,7 +79,7 @@ def save_event(message):
     ##save
     lst_users = db.distinct(key='id')
     if dic_user['id'] not in lst_users:
-        db.insert_one({'id':dic_user['id'], 'event':{name:date}})
+        db.insert_one({'id':dic_user['id'], 'events':{name:date}})
     else :
         dic_events = db.find_one({'id':dic_user['id']})['events']
         dic_events.update({name:date})
@@ -92,36 +92,42 @@ def save_event(message):
 ## Check
 @bot.message_handler(commands=['check'])
 def _check(message):
-    dic_user['id'] = str(message.chat.id)
+    dic_user["id"] = str(message.chat.id) 
 
-    #error
-    lst_users = db.distinct(key='id')
-    if dic_user not in lst_users:
-        msg = "Please use the /save command to save an event first"
-    
-    #Query
-    else :
-        dic_events = db.find_one({'id': dic_user['id']})['events']
+    ## error
+    lst_users = db.distinct(key="id")
+    if dic_user["id"] not in lst_users:
+        msg = "First you need to save an event with \n/save"
+
+    ## query
+    else:
+        dic_events = db.find_one({"id":dic_user["id"]})["events"]
         today = datetime.datetime.today().strftime('%b %d')
         logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- CHECKING")
-        res =  [k for k , v in dic_events.items() if v == 'today']
+        res = [k for k,v in dic_events.items() if v == today]
         msg = "Today's events: "+", ".join(res) if len(res) > 0 else "No events today"
+    
     bot.send_message(message.chat.id, msg)
 
 
-# check
+
+# /view
 @bot.message_handler(commands=['view'])
 def _view(message):
-    dic_user['id'] = str(message.chat.id)
-    lst_users = db.distinct(key='id')
-    if dic_user not in lst_users:
-        msg = 'Please use the /save command to save an event first'
+    dic_user["id"] = str(message.chat.id) 
 
+    ## error
+    lst_users = db.distinct(key="id")
+    if dic_user["id"] not in lst_users:
+        msg = "You have no events. Save an event with \n/save"
+
+    ## query
     else:
-        dic_events = db.find_one({'id':dic_user['id']})['events']
-        dic_events_sorted = {k: v for k, v in sorted(dic_events.items(), key=lambda item : item[0])}
+        dic_events = db.find_one({"id":dic_user["id"]})["events"]
+        dic_events_sorted = {k:v for k,v in sorted(dic_events.items(), key=lambda item:item[0])}
         logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- VIEW ALL")
         msg = "\n".join(k+": "+v for k,v in dic_events_sorted.items())
+    
     bot.send_message(message.chat.id, msg)
 
 
@@ -140,7 +146,7 @@ def delete_event(message):
     logging.info(str(message.chat.username)+" - "+str(message.chat.id)+" --- DELETE - "+txt)
 
     ## delete
-    dic_events = db.find_one({'id': dic_user['id']})['ecents']
+    dic_events = db.find_one({'id': dic_user['id']})['events']
     dic_events.pop(txt)
     db.update_one({'id':dic_user['id']},  {"$set":{"events":dic_events}})
 
@@ -171,6 +177,8 @@ def scheduler():
         if len(res) > 0:
             msg = "Today's events: "+", ".join(res)
             bot.send_message(user, msg)
+
+
 
 
 
