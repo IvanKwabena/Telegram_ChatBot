@@ -199,7 +199,7 @@ def getMessage():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://git.heroku.com/telegram-bot34.git'+  TELE_KEY )
+    bot.set_webhook(url='https://git.heroku.com/telegrambot2116.git'+  TELE_KEY )
     # return 'Chat with the Bot  <a href ="https://t.me/DatesReminderBot">here</a> \
     #     or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
 
@@ -207,5 +207,5 @@ if __name__ == "__main__":
     print("---", datetime.datetime.now().strftime("%H:%M"), "---")
     if datetime.datetime.now().strftime("%H:%M") in ["05:00","05:01","06:00","06:01","07:00","07:01"]:
         threading.Thread(target=scheduler).start()
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT")))
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 
