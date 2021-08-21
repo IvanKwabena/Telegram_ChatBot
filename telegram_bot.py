@@ -207,5 +207,5 @@ if __name__ == "__main__":
     print("---", datetime.datetime.now().strftime("%H:%M"), "---")
     if datetime.datetime.now().strftime("%H:%M") in ["05:00","05:01","06:00","06:01","07:00","07:01"]:
         threading.Thread(target=scheduler).start()
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 
