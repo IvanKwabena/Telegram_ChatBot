@@ -25,7 +25,7 @@ load_dotenv(env_path)
 # print(os.getenv('PATH'))
 
 TELE_KEY = os.getenv("TELEGRAM_API_KEY")
-print(TELE_KEY)
+# print(TELE_KEY)
 bot = telebot.TeleBot(TELE_KEY)
 dic_user = {}
 
@@ -194,20 +194,18 @@ app = flask.Flask(__name__)
 
 @app.route('/'+ TELE_KEY, methods=['POST'])
 def getMessage():
-    json_string = request.get_data().decode('utf-8')
-    update = telebot.types.Update.de_json(json_string)
-    bot.process_new_updates([update])
+    bot.process_new_updates([telebot.types.Update.de_json(flask.request.stream.read().decode("utf-8"))])
+    return "!", 200
 
 @app.route("/")
 def webhook():
     bot.remove_webhook()
     bot.set_webhook(url='https://telegrambot2116.herokuapp.com/'+  TELE_KEY )
-    # return 'Chat with the Bot  <a href ="https://t.me/DatesReminderBot">here</a> \
-    #     or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
+    return 200
 
 if __name__ == "__main__":
     print("---", datetime.datetime.now().strftime("%H:%M"), "---")
     if datetime.datetime.now().strftime("%H:%M") in ["05:00","05:01","06:00","06:01","07:00","07:01"]:
         threading.Thread(target=scheduler).start()
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)), debug=True)
 
