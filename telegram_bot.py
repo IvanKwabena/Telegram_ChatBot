@@ -187,19 +187,21 @@ def scheduler():
 
 # bot.polling(none_stop=True)
 import flask
+from flask import  request
 import threading
 
 app = flask.Flask(__name__)
 
 @app.route('/'+ TELE_KEY, methods=['POST'])
 def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(flask.request.stream.read().decode("utf-8"))])
-    return "!", 200
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
 
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://git.heroku.com/telegrambot2116.git'+  TELE_KEY )
+    bot.set_webhook(url='https://telegrambot2116.herokuapp.com/'+  TELE_KEY )
     # return 'Chat with the Bot  <a href ="https://t.me/DatesReminderBot">here</a> \
     #     or   Check the project code <a href ="https://github.com/mdipietro09/Bot_TelegramDatesReminder">here</a>', 200
 
