@@ -192,6 +192,7 @@ import threading
 
 app = flask.Flask(__name__)
 
+
 @app.route('/'+TELE_KEY, methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(flask.request.stream.read().decode("utf-8"))])
@@ -207,5 +208,5 @@ if __name__ == "__main__":
     # print("---", datetime.datetime.now().strftime("%H:%M"), "---")
     # if datetime.datetime.now().strftime("%H:%M") in ["05:00","05:01","06:00","06:01","07:00","07:01"]:
     #     threading.Thread(target=scheduler).start()
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=False)
 
