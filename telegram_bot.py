@@ -192,7 +192,7 @@ import threading
 
 app = flask.Flask(__name__)
 
-@app.route('/'+TELE_KEY, methods=['GET'])
+@app.route('/'+TELE_KEY, methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(flask.request.stream.read().decode("utf-8"))])
     return "!", 200
