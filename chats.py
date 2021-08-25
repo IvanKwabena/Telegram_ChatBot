@@ -20,5 +20,5 @@ class TeleChats:
         elif any(x in txt.lower() for x in ["hi","hello","yo","hey"]):
             msg = "yo" if str(self.message.chat.username) == "none" else "yo "+str(self.message.chat.username)
         else:
-            msg = "save a date with \n/save"
+            msg = "Save a date with \n/save"
         return msg
