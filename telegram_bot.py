@@ -1,7 +1,7 @@
 # Packages
 # from Settings.config import MONGODB_KEY
 from chats import TeleChats
-from pymongo import message
+# from pymongo import message
 import telebot
 import dateparser
 import datetime
@@ -12,11 +12,11 @@ import pymongo
 # from Settings import config
 import os
 from dotenv import load_dotenv
-from pymongo import collection
+# from pymongo import collection
 load_dotenv()
 from telegram import  bot
-from telegram.ext import Updater, CommandHandler, CallbackContext
-from pymongo import MongoClient
+# from telegram.ext import Updater, CommandHandler, CallbackContext
+# from pymongo import MongoClient
 
 ## bot 
 
